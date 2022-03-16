@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "./styles.css"
+import App from '../client/components/App';
 
 ReactDOM.render (
-  <h1>if you must...</h1>,
+  <App />,
   document.getElementById('root')
 );
