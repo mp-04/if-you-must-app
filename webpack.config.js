@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: path.join(__dirname, 'client', 'index.js'),
+  
   output: {
     filename: 'bundle.js'
   },
@@ -30,5 +31,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'client', 'index.html')
     })
-  ]
+  ],
+  devServer: {
+    proxy: {
+      '/**': 'http://localhost:3000'
+    }
+  }
 }
