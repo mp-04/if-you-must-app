@@ -7,7 +7,7 @@ header {
   justify-content: center;
 }
 body {
-  background-image: linear-gradient(to right, rgb(182 49 167), fuchsia);
+  background-image: linear-gradient(to right, rgb(182 49 167), rgb(138, 59, 241));
 }
 
 #submit-form {
@@ -32,5 +32,16 @@ body {
   min-height:25px;
   margin-top: 50px;
   margin-left: 8px;
-  background: rgb(92, 92, 202);
+  /* background: rgb(92, 92, 202); */
+  color: white;
+  background-image: url(https://cdn.mos.cms.futurecdn.net/BfemybeKVXCf9pgX9WCxsc.jpg);
+}
+
+#submit:hover {
+  background-color: rgb(48, 46, 46);
+  background-image: none;
+  color:rgb(138, 59, 241);
+  font-weight: bold;
+  width: 11vw;
+  height: 5vh;
 }

@@ -1,3 +1,4 @@
+const { rows } = require('pg/lib/defaults');
 const db = require('../database/db');
 
 const listController =  {};
@@ -9,7 +10,6 @@ listController.addUrls = (req, res, next) => {
   db.query(addUrlQuery)
   .then(response => {
     console.log('url has been added to db!')
-    res.locals.urls = response.rows;
     return next();
   })
   .catch(err => {
@@ -18,19 +18,20 @@ listController.addUrls = (req, res, next) => {
   // console.log(req.body);
 }
 
-//middleware to retrieve URLs
+// middleware to retrieve URLs
 listController.getUrls = (req, res, next) => {
-  const getUrlQuery = "SELECT url FROM url_list"
+  const getUrlQuery = 'SELECT url FROM url_list;'
   db.query(getUrlQuery)
   .then(response => {
-    console.log('get' + response.rows)
-    res.locals.urls = response.rows;
+    res.locals.url = response.rows;
+    // console.log(res.locals.url);
     return next();
   })
   .catch(err => {
     return next(err);
   })
 }
+
 
 //middleware to delete URLs
 

@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import Links from './Links'
+// import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
 
 
 class App extends Component {
@@ -6,7 +8,9 @@ class App extends Component {
     super(props);
   }
 
-  state = {inputUrl: ''}
+  state = {inputUrl: ''};
+  value = [];
+
 
   handleFunc = e => {
     e.preventDefault()
@@ -15,9 +19,16 @@ class App extends Component {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state)
     })
-    .then(res => console.log('app;' + res))
+    .then(res => res.json())
+    .then(result => {
+      for (let i = 0; i < result.length; i++) {
+        this.value.push(result[i].url)
+      }
+      // value = result;
+      console.log(this.value);
+    })
+    // console.log(this.props.dbResult);
   }
-
 
   render() {
     return (
@@ -28,6 +39,9 @@ class App extends Component {
           </input>
           <button id="submit">ADD</button>
         </form>
+        {/* {outputUrl} */}
+        {/* <Links value={this.value} /> */}
+        {/* {this.value} */}
       </div>
     );
   }
