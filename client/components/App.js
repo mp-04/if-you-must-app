@@ -10,6 +10,10 @@ class App extends Component {
   state = { inputUrl: "", wordArr: [] };
 
   componentDidMount() {
+    this.handleGetUrls();
+  }
+
+  handleGetUrls = () => {
     const urlArr = [];
     fetch("http://localhost:3000/").then((data) => {
       data.json().then((data) => {
@@ -17,20 +21,34 @@ class App extends Component {
         this.setState({ wordArr: urlArr });
       });
     });
-  }
+  };
 
-  handleFunc = (e) => {
-    e.preventDefault();
+  handleAddUrl = () => {
     fetch("http://localhost:3000/submit/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: this.state.inputUrl }),
     }).then((res) => console.log(res));
   };
+
+  handleDeleteUrl = (e) => {
+    const classNameSelector = `.y${e.target.id}`;
+    const urltoDelete = document
+      .querySelector(classNameSelector)
+      .querySelector("p").innerText;
+    fetch("http://localhost:3000/delete/", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        deleteUrl: urltoDelete,
+      }),
+    });
+    this.handleGetUrls();
+  };
   render() {
     return (
       <div>
-        <form id="submit-form" onSubmit={this.handleFunc}>
+        <form id="submit-form" onSubmit={this.handleAddUrl}>
           <input
             id="form"
             name="place"
@@ -43,12 +61,14 @@ class App extends Component {
         </form>
         {this.state.wordArr.map((url, index) => {
           return (
-            <div className="url-list" key={index}>
+            <div className={`url-list ${"y" + index.toString()}`} key={index}>
               <p>
-                url:&nbsp;
+                {/* url:&nbsp; */}
                 <a href={url}>{url}</a>
               </p>
-              <button>delete</button>
+              <button onClick={this.handleDeleteUrl} id={index}>
+                delete
+              </button>
             </div>
           );
         })}

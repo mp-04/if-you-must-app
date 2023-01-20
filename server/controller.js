@@ -21,7 +21,7 @@ listController.addUrls = (req, res, next) => {
 
 // middleware to retrieve URLs
 listController.getUrls = (req, res, next) => {
-  const getUrlQuery = "SELECT * FROM url_list;";
+  const getUrlQuery = "SELECT * FROM url_list ORDER BY id DESC;";
   db.query(getUrlQuery)
     .then((response) => {
       res.locals = response.rows;
@@ -33,8 +33,17 @@ listController.getUrls = (req, res, next) => {
 };
 
 // middleware to delete URLs
-listController.deleteUrl = (req, res, next) = {
-  // const deleteUrlQuery = `DELETE FROM url_list where url=${}`
-}
+listController.deleteUrl = (req, res, next) => {
+  const urlToDelete = req.body.deleteUrl;
+  const deleteUrlQuery = `DELETE FROM url_list where url=\'${urlToDelete}\'`;
+  db.query(deleteUrlQuery)
+    .then((response) => {
+      console.log(`${urlToDelete} has been deleted from the db!`);
+      return next();
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
 
 module.exports = listController;
