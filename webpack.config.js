@@ -1,13 +1,13 @@
-const path = require('path');
+const path = require("path");
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: 'development',
-  entry: path.join(__dirname, 'client', 'index.js'),
-  
+  mode: "development",
+  entry: path.join(__dirname, "client", "index.js"),
+
   output: {
-    filename: 'bundle.js'
+    filename: "bundle.js",
   },
   module: {
     rules: [
@@ -17,24 +17,25 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
-          }
-        }
+            presets: ["@babel/preset-env", "@babel/preset-react"],
+          },
+        },
       },
       {
         test: /\.css/,
-        use: ["style-loader", "css-loader"]
-      }
-    ]
+        use: ["style-loader", "css-loader"],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'client', 'index.html')
-    })
+      template: path.join(__dirname, "client", "index.html"),
+    }),
   ],
   devServer: {
+    headers: { "Access-Control-Allow-Origin": "*" },
     proxy: {
-      '/**': 'http://localhost:3000'
-    }
-  }
-}
+      "/**": "http://localhost:3000",
+    },
+  },
+};
