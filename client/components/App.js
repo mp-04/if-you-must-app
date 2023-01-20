@@ -43,8 +43,8 @@ class App extends Component {
         </form>
         {this.state.wordArr.map((url, index) => {
           return (
-            <div className="url-list">
-              <p key={index}>
+            <div className="url-list" key={index}>
+              <p>
                 url:&nbsp;
                 <a href={url}>{url}</a>
               </p>

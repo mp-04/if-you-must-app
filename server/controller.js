@@ -32,9 +32,9 @@ listController.getUrls = (req, res, next) => {
     });
 };
 
-//middleware to delete URLs
-// listController.deleteUrl = (req, res, next) = {
-//   const deleteUrlQuery = `DELETE FROM url_list where url=${}`
-// }
+// middleware to delete URLs
+listController.deleteUrl = (req, res, next) = {
+  // const deleteUrlQuery = `DELETE FROM url_list where url=${}`
+}
 
 module.exports = listController;
