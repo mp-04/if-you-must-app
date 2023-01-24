@@ -27,7 +27,9 @@ app.post(
   }
 );
 
-app.delete("/delete", listController.deleteUrl, (req, res) => {});
+app.delete("/delete", listController.deleteUrl, (req, res) => {
+  return res.sendStatus(200);
+});
 
 app.listen(port, () => {
   console.log(`Server running at port: ${port}`);

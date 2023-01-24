@@ -1,3 +1,4 @@
+const { getLinkPreview } = require("link-preview-js");
 const { rows } = require("pg/lib/defaults");
 const db = require("../database/db");
 
@@ -21,11 +22,39 @@ listController.addUrls = (req, res, next) => {
 
 // middleware to retrieve URLs
 listController.getUrls = (req, res, next) => {
+  res.locals.info = [];
   const getUrlQuery = "SELECT * FROM url_list ORDER BY id DESC;";
   db.query(getUrlQuery)
     .then((response) => {
-      res.locals = response.rows;
-      return next();
+      response.rows.forEach((row, index) => {
+        res.locals.info.push({
+          displayUrl: row.url,
+        });
+        const getPromise = async () => {
+          let promise = getLinkPreview(row.url);
+          let result = await promise;
+          res.locals.info[index].image = result.images[0];
+          return;
+        };
+        getPromise();
+        // const imageFromPromise = (async () => await getPromise())();
+        // getLinkPreview(row.url).then((data) => {
+        //   res.locals.image = data.images[0];
+        // });
+      });
+      setTimeout(() => {
+        return next();
+      }, 1000);
+      // return next();
+
+      // console.log("reso", response);
+      // res.locals.getUrls = response.rows;
+      // // console.log("reslocals", res.locals);
+      // res.locals.getUrls.forEach((data) => {
+      //   getLinkPreview(data.url).then((data) => {
+      //     console.log(data);
+      //   });
+      // });
     })
     .catch((err) => {
       return next(err);

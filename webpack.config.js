@@ -1,4 +1,5 @@
 const path = require("path");
+const { SourceMapDevToolPlugin } = require("webpack");
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -9,6 +10,7 @@ module.exports = {
   output: {
     filename: "bundle.js",
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -30,6 +32,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "client", "index.html"),
+    }),
+    new SourceMapDevToolPlugin({
+      filename: "[file].map",
     }),
   ],
   devServer: {
