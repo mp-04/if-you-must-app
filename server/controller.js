@@ -26,36 +26,44 @@ listController.getUrls = (req, res, next) => {
   const getUrlQuery = "SELECT * FROM url_list ORDER BY id DESC;";
   db.query(getUrlQuery)
     .then((response) => {
+      const promises = [];
       response.rows.forEach((row, index) => {
         res.locals.info.push({
           displayUrl: row.url,
         });
-        const getPromise = async () => {
-          let promise = getLinkPreview(row.url);
-          let result = await promise;
-          res.locals.info[index].image = result.images[0];
-          return;
-        };
-        getPromise();
-        // const imageFromPromise = (async () => await getPromise())();
-        // getLinkPreview(row.url).then((data) => {
-        //   res.locals.image = data.images[0];
-        // });
+        promises.push(
+          getLinkPreview(row.url).then((result) => {
+            res.locals.info[index].image = result.images[0];
+          })
+        );
       });
-      setTimeout(() => {
-        return next();
-      }, 1000);
-      // return next();
-
-      // console.log("reso", response);
-      // res.locals.getUrls = response.rows;
-      // // console.log("reslocals", res.locals);
-      // res.locals.getUrls.forEach((data) => {
-      //   getLinkPreview(data.url).then((data) => {
-      //     console.log(data);
-      //   });
-      // });
+      return Promise.all(promises);
     })
+    .then(() => next())
+    // response.rows.forEach((row, index) => {
+    //   res.locals.info.push({
+    //     displayUrl: row.url,
+    //   });
+    //   const getPromise = async () => {
+    //     const result = await getLinkPreview(row.url);
+    //     res.locals.info[index].image = result.images[0];
+    //     return;
+    //   };
+    //   getPromise();
+    // });
+    // return next();
+    // setTimeout(() => {
+    //   return next();
+    // }, 1000);
+
+    // console.log("reso", response);
+    // res.locals.getUrls = response.rows;
+    // // console.log("reslocals", res.locals);
+    // res.locals.getUrls.forEach((data) => {
+    //   getLinkPreview(data.url).then((data) => {
+    //     console.log(data);
+    //   });
+    // });
     .catch((err) => {
       return next(err);
     });
