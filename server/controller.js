@@ -32,7 +32,9 @@ listController.getUrls = (req, res, next) => {
           displayUrl: row.url,
         });
         promises.push(
-          getLinkPreview(row.url).then((result) => {
+          getLinkPreview(row.url, {
+            followRedirects: "follow",
+          }).then((result) => {
             res.locals.info[index].image = result.images[0];
           })
         );

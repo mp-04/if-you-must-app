@@ -1,19 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import Links from "./Links";
-import { getLinkPreview, getPreviewFromContent } from "link-preview-js";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-  }
+const App = () => {
+  const [inputUrl, setInputUrl] = useState("");
+  const [wordArr, setWordArr] = useState([]);
+  const [imageArr, setImageArr] = useState([]);
 
-  state = { inputUrl: "", wordArr: [], imageArr: [] };
-
-  componentDidMount() {
-    this.handleGetUrls();
-  }
-
-  handleGetUrls = () => {
+  const handleGetUrls = () => {
     const urlArr = [];
     const tempImg = [];
     fetch("http://localhost:3000/").then((data) => {
@@ -22,22 +15,23 @@ class App extends Component {
           urlArr.push(item["displayUrl"]);
           tempImg.push(item["image"]);
         });
-        this.setState({ wordArr: urlArr, imageArr: tempImg });
+        setWordArr(urlArr);
+        setImageArr(tempImg);
       });
     });
   };
 
-  handleAddUrl = () => {
-    this.isValidUrl(this.state.inputUrl)
+  const handleAddUrl = () => {
+    isValidUrl(inputUrl)
       ? fetch("http://localhost:3000/submit/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: this.state.inputUrl }),
+          body: JSON.stringify({ url: inputUrl }),
         }).then((res) => console.log(res))
       : "";
   };
 
-  handleDeleteUrl = (e) => {
+  const handleDeleteUrl = (e) => {
     const classNameSelector = `.y${e.target.id}`;
     const urltoDelete = document
       .querySelector(classNameSelector)
@@ -48,12 +42,10 @@ class App extends Component {
       body: JSON.stringify({
         deleteUrl: urltoDelete,
       }),
-    })
-      .then(this.handleGetUrls())
-      .then(this.setState());
+    }).then(handleGetUrls());
   };
 
-  isValidUrl = (string) => {
+  const isValidUrl = (string) => {
     try {
       const newUrl = new URL(string);
       return newUrl.protocol === "http:" || newUrl.protocol === "https:";
@@ -62,46 +54,43 @@ class App extends Component {
     }
   };
 
-  render() {
-    return (
-      <>
-        <div>
-          <form id="submit-form" onSubmit={this.handleAddUrl}>
-            <input
-              id="form"
-              name="place"
-              type="text"
-              placeholder="...if you must..."
-              value={this.state.inputUrl}
-              onChange={(e) => this.setState({ inputUrl: e.target.value })}
-            ></input>
-            {this.isValidUrl(this.state.inputUrl) ? (
-              <button id="submit">ADD</button>
-            ) : (
-              <button id="disabled">ADD</button>
-            )}
-          </form>
-          {this.state.wordArr.map((url, index) => {
-            return (
-              <div className={`url-list ${"y" + index.toString()}`} key={index}>
-                {/* url:&nbsp; */}
-                <img
-                  src={this.state.imageArr[index]}
-                  alt=""
-                  height={125}
-                  width={125}
-                />
-                <a href={url}>{url}</a>
-                <button onClick={this.handleDeleteUrl} id={index}>
-                  delete
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </>
-    );
-  }
-}
+  useEffect(() => {
+    handleGetUrls();
+  }, []);
+
+  return (
+    <>
+      <div>
+        <form id="submit-form" onSubmit={handleAddUrl}>
+          <input
+            id="form"
+            name="place"
+            type="text"
+            placeholder="...if you must..."
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
+          ></input>
+          {isValidUrl(inputUrl) ? (
+            <button id="submit">ADD</button>
+          ) : (
+            <button id="disabled">ADD</button>
+          )}
+        </form>
+        {wordArr.map((url, index) => {
+          return (
+            <div className={`url-list ${"y" + index.toString()}`} key={index}>
+              {/* url:&nbsp; */}
+              <img src={imageArr[index]} alt="" height={125} width={125} />
+              <a href={url}>{url}</a>
+              <button onClick={handleDeleteUrl} id={index}>
+                delete
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+};
 
 export default App;
