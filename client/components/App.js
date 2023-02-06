@@ -3,23 +3,6 @@ import Links from "./Links";
 
 const App = () => {
   const [inputUrl, setInputUrl] = useState("");
-  const [wordArr, setWordArr] = useState([]);
-  const [imageArr, setImageArr] = useState([]);
-
-  const handleGetUrls = () => {
-    const urlArr = [];
-    const tempImg = [];
-    fetch("http://localhost:3000/").then((data) => {
-      data.json().then((data) => {
-        data.info.forEach((item) => {
-          urlArr.push(item["displayUrl"]);
-          tempImg.push(item["image"]);
-        });
-        setWordArr(urlArr);
-        setImageArr(tempImg);
-      });
-    });
-  };
 
   const handleAddUrl = () => {
     isValidUrl(inputUrl)
@@ -31,20 +14,6 @@ const App = () => {
       : "";
   };
 
-  const handleDeleteUrl = (e) => {
-    const classNameSelector = `.y${e.target.id}`;
-    const urltoDelete = document
-      .querySelector(classNameSelector)
-      .querySelector("a").innerText;
-    fetch("http://localhost:3000/delete/", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        deleteUrl: urltoDelete,
-      }),
-    }).then(handleGetUrls());
-  };
-
   const isValidUrl = (string) => {
     try {
       const newUrl = new URL(string);
@@ -53,10 +22,6 @@ const App = () => {
       return false;
     }
   };
-
-  useEffect(() => {
-    handleGetUrls();
-  }, []);
 
   return (
     <>
@@ -76,18 +41,7 @@ const App = () => {
             <button id="disabled">ADD</button>
           )}
         </form>
-        {wordArr.map((url, index) => {
-          return (
-            <div className={`url-list ${"y" + index.toString()}`} key={index}>
-              {/* url:&nbsp; */}
-              <img src={imageArr[index]} alt="" height={125} width={125} />
-              <a href={url}>{url}</a>
-              <button onClick={handleDeleteUrl} id={index}>
-                delete
-              </button>
-            </div>
-          );
-        })}
+        <Links />
       </div>
     </>
   );
